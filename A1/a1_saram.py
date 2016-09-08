@@ -89,7 +89,7 @@ def Cos_sim_fun():
     simil_since_mosthelpful = defaultdict()
     avg = []
     for i in range(0, 1000000):
-        avg.append(np.array([]))
+        avg.append((0., 0.))
     for k in prod_helpful.keys():
         if len(prod_helpful[k]) > Helpfulness_reviewNo_thereshold: #Get the
           #  print "tag"
@@ -99,7 +99,9 @@ def Cos_sim_fun():
             for idxpair,val in np.ndenumerate(simMatrix):
                 if idxpair[0] > idxpair[1]:
 #                    print "tag"
-                    avg[idxpair[0] - idxpair[1]] = np.append(avg[idxpair[0] - idxpair[1]], [val])
+                    avg[idxpair[0] - idxpair[1]][0] += val
+                    avg[idxpair[0] - idxpair[1]][1] += 1.
+
 
             i = prod_helpful[k].index(max(prod_helpful[k]) )
            # tfidf_matrix_target = tfidf_vectorizer.fit_transform(prod_text[k][i:])
@@ -110,7 +112,7 @@ def Cos_sim_fun():
             text_since_mosthelpful[k] = prod_text[k][i+1:]
     return text_since_mosthelpful, simil_since_mosthelpful, avg
 
-text_since_mosthelpful, simil_since_mosthelpful, average_cos_sim = Cos_sim_fun()
+text_since_mosthelpful, simil_since_mosthelpful, average_cos_sim= Cos_sim_fun()
 print average_cos_sim[1]
 
 
@@ -156,20 +158,23 @@ set_4_means = get_means(set_array_cre_n(set_4))
 #set_5_means = get_means(set_array_cre_n(set_5))
 avg = []
 for val in average_cos_sim:
-   avg.append(np.average(val))
+    if val[1] == 0.:
+        val[1] = 1.
+    avg.append(val[0]/val[1])
 plt.subplot(4,1,1)
 plt.plot(range(len(set_3_means)), set_3_means, '-o')
 plt.plot(range(len(set_3_means)), avg[0:len(set_3_means)], 'ro')
 plt.subplot(4,1,2)
 plt.plot(range(len(set_4_means)), set_4_means, '-o')
 plt.plot(range(len(set_4_means)), avg[0:len(set_4_means)], 'ro')
-#plt.subplot(4,1,3)
-#plt.plot(range(len(set_5_means)), set_5_means, '-o')
-#plt.plot(range(len(set_5_means)), avg, 'ro')
+plt.subplot(4,1,3)
+plt.plot(range(len(set_5_means)), set_5_means, '-o')
+plt.plot(range(len(set_5_means)), avg[0:len(set_5_means)], 'ro')
 
 #plot for all
-#set_all = category_n(0, 10000000)
-#set_all_means = get_means(set_array_cre_n(set_all))
-#plt.subplot(4,1,4)
-#plt.plot(range(len(set_all_means)), set_all_means, '-o')
+set_all = category_n(0, 10000000)
+set_all_means = get_means(set_array_cre_n(set_all))
+plt.subplot(4,1,4)
+plt.plot(range(len(set_all_means)), set_all_means, '-o')
+plt.plot(range(len(set_all_means)), avg[0:len(set_all_means)], 'ro')
 plt.show()
