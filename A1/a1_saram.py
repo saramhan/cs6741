@@ -87,18 +87,31 @@ def Cos_sim_fun():
     tfidf_vectorizer = TfidfVectorizer()
     text_since_mosthelpful = defaultdict()
     simil_since_mosthelpful = defaultdict()
+    avg = []
+    for i in range(0, 1000000):
+        avg.append(np.array([]))
     for k in prod_helpful.keys():
         if len(prod_helpful[k]) > Helpfulness_reviewNo_thereshold: #Get the
+          #  print "tag"
+            tfidf_matrix_target = tfidf_vectorizer.fit_transform(prod_text[k])
+            simMatrix = cosine_similarity(tfidf_matrix_target, tfidf_matrix_target)
+         #   print simMatrix.shape
+            for idxpair,val in np.ndenumerate(simMatrix):
+                if idxpair[0] > idxpair[1]:
+#                    print "tag"
+                    avg[idxpair[0] - idxpair[1]] = np.append(avg[idxpair[0] - idxpair[1]], [val])
+
             i = prod_helpful[k].index(max(prod_helpful[k]) )
-            tfidf_matrix_target = tfidf_vectorizer.fit_transform(prod_text[k][i:])
-            simlist = cosine_similarity(tfidf_matrix_target[0:1], tfidf_matrix_target)
+           # tfidf_matrix_target = tfidf_vectorizer.fit_transform(prod_text[k][i:])
+            simlist = cosine_similarity(tfidf_matrix_target[i:i + 1], tfidf_matrix_target[i:])
             simlist = simlist.tolist()[0]
             simlist = simlist[1:]
             simil_since_mosthelpful[k] = simlist #
             text_since_mosthelpful[k] = prod_text[k][i+1:]
-    return text_since_mosthelpful, simil_since_mosthelpful
+    return text_since_mosthelpful, simil_since_mosthelpful, avg
 
-text_since_mosthelpful, simil_since_mosthelpful = Cos_sim_fun()
+text_since_mosthelpful, simil_since_mosthelpful, average_cos_sim = Cos_sim_fun()
+print average_cos_sim[1]
 
 
 def set_array_cre_n(set_n):
@@ -129,22 +142,34 @@ def category_n(ll,ul):
     return pids
 
 #plot for three different groups
-set_3 = category_n(20, 70)
-set_4 = category_n(70, 130)
-set_5 = category_n(130, 10000000)
+set_3_lower = 20
+set_3_upper = 70
+set_3 = category_n(set_3_lower, set_3_upper)
+set_4_lower = 70
+set_4_upper = 130
+set_4 = category_n(set_4_lower, set_4_upper)
+set_5_lower = 130
+set_5_upper = 10000000
+#set_5 = category_n(set_5_lower, set_5_upper)
 set_3_means = get_means(set_array_cre_n(set_3))
 set_4_means = get_means(set_array_cre_n(set_4))
-set_5_means = get_means(set_array_cre_n(set_5))
+#set_5_means = get_means(set_array_cre_n(set_5))
+avg = []
+for val in average_cos_sim:
+   avg.append(np.average(val))
 plt.subplot(4,1,1)
 plt.plot(range(len(set_3_means)), set_3_means, '-o')
+plt.plot(range(len(set_3_means)), avg[0:len(set_3_means)], 'ro')
 plt.subplot(4,1,2)
 plt.plot(range(len(set_4_means)), set_4_means, '-o')
-plt.subplot(4,1,3)
-plt.plot(range(len(set_5_means)), set_5_means, '-o')
+plt.plot(range(len(set_4_means)), avg[0:len(set_4_means)], 'ro')
+#plt.subplot(4,1,3)
+#plt.plot(range(len(set_5_means)), set_5_means, '-o')
+#plt.plot(range(len(set_5_means)), avg, 'ro')
 
 #plot for all
-set_all = category_n(0, 10000000)
-set_all_means = get_means(set_array_cre_n(set_all))
-plt.subplot(4,1,4)
-plt.plot(range(len(set_all_means)), set_all_means, '-o')
+#set_all = category_n(0, 10000000)
+#set_all_means = get_means(set_array_cre_n(set_all))
+#plt.subplot(4,1,4)
+#plt.plot(range(len(set_all_means)), set_all_means, '-o')
 plt.show()
