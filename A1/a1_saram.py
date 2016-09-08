@@ -101,9 +101,7 @@ def Cos_sim_fun():
 #                    print "tag"
                     avg[idxpair[0] - idxpair[1]][0] += val
                     avg[idxpair[0] - idxpair[1]][1] += 1.
-
-
-            i = prod_helpul[k].index(max(prod_helpful[k]) )
+            i = prod_helpful[k].index(max(prod_helpful[k]) )
            # tfidf_matrix_target = tfidf_vectorizer.fit_transform(prod_text[k][i:])
             simlist = cosine_similarity(tfidf_matrix_target[i:i + 1], tfidf_matrix_target[i:])
             simlist = simlist.tolist()[0]
