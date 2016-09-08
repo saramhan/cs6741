@@ -152,10 +152,10 @@ set_4_upper = 130
 set_4 = category_n(set_4_lower, set_4_upper)
 set_5_lower = 130
 set_5_upper = 10000000
-#set_5 = category_n(set_5_lower, set_5_upper)
+set_5 = category_n(set_5_lower, set_5_upper)
 set_3_means = get_means(set_array_cre_n(set_3))
 set_4_means = get_means(set_array_cre_n(set_4))
-#set_5_means = get_means(set_array_cre_n(set_5))
+set_5_means = get_means(set_array_cre_n(set_5))
 avg = []
 for val in average_cos_sim:
     if val[1] == 0.:
