@@ -89,7 +89,7 @@ def Cos_sim_fun():
     simil_since_mosthelpful = defaultdict()
     avg = []
     for i in range(0, 1000000):
-        avg.append((0., 0.))
+        avg.append([0., 0.])
     for k in prod_helpful.keys():
         if len(prod_helpful[k]) > Helpfulness_reviewNo_thereshold: #Get the
           #  print "tag"
@@ -103,7 +103,7 @@ def Cos_sim_fun():
                     avg[idxpair[0] - idxpair[1]][1] += 1.
 
 
-            i = prod_helpful[k].index(max(prod_helpful[k]) )
+            i = prod_helpul[k].index(max(prod_helpful[k]) )
            # tfidf_matrix_target = tfidf_vectorizer.fit_transform(prod_text[k][i:])
             simlist = cosine_similarity(tfidf_matrix_target[i:i + 1], tfidf_matrix_target[i:])
             simlist = simlist.tolist()[0]
